@@ -1,0 +1,30 @@
+# CocoaPodsを使用しない(.xcodeprojを使用する)場合の例
+machine:
+  environment:
+    XCODE_SCHEME: CircleCI-Sample
+    XCODE_PROJECT: CircleCI-Sample.xcodeproj
+    XCODE_TARGET: CircleCI-Sample
+    APPNAME: CircleCI-Sample
+    DEPLOYGATE_USER_NAME: XXX
+    DEVELOPER_NAME: "iPhone Distribution: XXX (CTQDM00000)"
+    PROFILE_NAME: "650f2f4c-f93d-40c2-b91a-1111111111.mobileprovision"
+    # DEPLOYGATE_API_TOKEN: set from web form
+    # P12_FILE_PASSWORD: set from web form
+test:
+  override:
+    - xcodebuild
+        CODE_SIGNING_REQUIRED=NO
+        CODE_SIGN_IDENTITY=
+        PROVISIONING_PROFILE=
+        -project CircleCI-Sample.xcodeproj -scheme CircleCI-Sample -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=8.1,name=iPhone 6'
+        clean test
+
+deployment:
+  deploygate:
+    branch: master
+    owner: xxx
+    commands:
+      - ./scripts/add-key.sh
+      - ./scripts/deploy.sh
+      - ./scripts/remove-key.sh
+

@@ -1,0 +1,27 @@
+# CocoaPodsを使用する(.xcworkspaceを使用する)場合の例
+machine:
+  environment:
+    XCODE_SCHEME: CircleCI-Sample
+    XCODE_WORKSPACE: CircleCI-Sample.xcworkspace
+    APPNAME: CircleCI-Sample
+    DEPLOYGATE_USER_NAME: XXX
+    DEVELOPER_NAME: "iPhone Distribution: XXX (CTQDM00000)"
+    PROFILE_NAME: "650f2f4c-f93d-40c2-b91a-1111111111.mobileprovision"
+    # DEPLOYGATE_API_TOKEN: set from web form
+    # P12_FILE_PASSWORD: set from web form
+dependencies:
+  override:
+    - pod install:
+        timeout: 300
+test:
+  override:
+    - xctool -workspace CircleCI-Sample.xcworkspace -scheme CircleCI-Sample -sdk iphonesimulator clean build test
+deployment:
+  deploygate:
+    branch: master
+    owner: xxx
+    commands:
+      - ./scripts/add-key.sh
+      - ./scripts/deploy.sh
+      - ./scripts/remove-key.sh
+
